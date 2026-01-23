@@ -1,37 +1,46 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { InputField } from "@/components/ui/InputField";
 import { login, register } from "@/lib/api";
 
-export function LoginScreen() {
-  const [isLoginTab, setIsLoginTab] = useState(true);
+type AuthFormProps = {
+  mode: "login" | "register";
+};
+
+export function AuthForm({ mode }: AuthFormProps) {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const isLogin = mode === "login";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
 
     if (!email || !password) {
       setError("メールアドレスとパスワードを入力してください");
       return;
     }
 
-    if (!isLoginTab && password !== confirmPassword) {
+    if (!isLogin && password !== confirmPassword) {
       setError("パスワードが一致しません");
       return;
     }
 
     setIsLoading(true);
 
-    const result = isLoginTab
+    const result = isLogin
       ? await login(email, password)
       : await register(email, password);
 
@@ -42,7 +51,14 @@ export function LoginScreen() {
       return;
     }
 
-    window.location.href = "/";
+    if (isLogin) {
+      router.push("/dashboard");
+    } else {
+      setSuccess("登録が完了しました。ログイン画面に移動します...");
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
+    }
   };
 
   return (
@@ -63,20 +79,18 @@ export function LoginScreen() {
         <Card>
           {/* Tabs */}
           <div className="flex mb-6">
-            <button
-              type="button"
-              onClick={() => setIsLoginTab(true)}
-              className={`tab ${isLoginTab ? "tab-active" : ""}`}
+            <a
+              href="/login"
+              className={`tab ${isLogin ? "tab-active" : ""}`}
             >
               ログイン
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsLoginTab(false)}
-              className={`tab ${!isLoginTab ? "tab-active" : ""}`}
+            </a>
+            <a
+              href="/register"
+              className={`tab ${!isLogin ? "tab-active" : ""}`}
             >
               新規登録
-            </button>
+            </a>
           </div>
 
           {/* Form */}
@@ -98,7 +112,7 @@ export function LoginScreen() {
                 placeholder="8文字以上"
               />
 
-              {!isLoginTab && (
+              {!isLogin && (
                 <InputField
                   label="パスワード（確認）"
                   type="password"
@@ -113,8 +127,12 @@ export function LoginScreen() {
               <p className="mt-4 text-sm text-red-500 text-center">{error}</p>
             )}
 
+            {success && (
+              <p className="mt-4 text-sm text-green-600 text-center">{success}</p>
+            )}
+
             <PrimaryButton type="submit" disabled={isLoading} className="mt-6">
-              {isLoading ? "..." : isLoginTab ? "ログイン" : "新規登録"}
+              {isLoading ? "..." : isLogin ? "ログイン" : "新規登録"}
             </PrimaryButton>
           </form>
         </Card>
