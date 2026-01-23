@@ -1,0 +1,78 @@
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+
+type ApiError = {
+  code: string;
+  message: string;
+  fields?: Record<string, string>;
+  details?: Record<string, unknown>;
+};
+
+type ApiResponse<T> = {
+  data?: T;
+  error?: ApiError;
+};
+
+async function request<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<ApiResponse<T>> {
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+
+    if (res.status === 204) {
+      return { data: undefined as T };
+    }
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      return { error: json.error };
+    }
+
+    return { data: json };
+  } catch {
+    return {
+      error: {
+        code: "NETWORK_ERROR",
+        message: "サーバーに接続できません",
+      },
+    };
+  }
+}
+
+// Auth API
+export type User = {
+  id: string;
+  email: string;
+};
+
+type AuthResponse = {
+  user: User;
+};
+
+export async function register(email: string, password: string) {
+  return request<AuthResponse>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function login(email: string, password: string) {
+  return request<AuthResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function logout() {
+  return request<void>("/auth/logout", {
+    method: "POST",
+  });
+}

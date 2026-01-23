@@ -1,9 +1,5 @@
-import Image from "next/image";
+import { LoginScreen } from "@/components/features/auth/LoginScreen";
 
 export default function Home() {
-  return (
-    <div>
-      Hello
-    </div>
-  );
+  return <LoginScreen />;
 }

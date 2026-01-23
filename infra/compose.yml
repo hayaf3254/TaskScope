@@ -15,7 +15,7 @@ services:
     volumes:
       - ../apps/web:/app
       - /app/node_modules
-      - /app/.next
+    command: ["sh", "-c", "npm install && rm -rf .next && npm run dev -- -H 0.0.0.0 -p 3000"]
     depends_on:
       - api
 

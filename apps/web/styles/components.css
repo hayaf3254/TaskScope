@@ -1,0 +1,100 @@
+/* ===========================================
+   TaskScope - Component Styles
+   =========================================== */
+
+@layer components {
+  /* --------------------------------
+     Card
+     -------------------------------- */
+  .card {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+  }
+
+  /* --------------------------------
+     Primary Button
+     -------------------------------- */
+  .btn-primary {
+    width: 100%;
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* --------------------------------
+     Input (underline style)
+     -------------------------------- */
+  .input-underline {
+    width: 100%;
+    padding: 0.75rem 0;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .input-underline::placeholder {
+    color: var(--color-placeholder);
+  }
+
+  .input-underline:focus {
+    border-bottom-color: var(--color-primary);
+  }
+
+  /* --------------------------------
+     Tab
+     -------------------------------- */
+  .tab {
+    flex: 1;
+    padding-bottom: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .tab-active {
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+  }
+
+  /* --------------------------------
+     App Icon
+     -------------------------------- */
+  .app-icon {
+    width: 4rem;
+    height: 4rem;
+    background-color: var(--color-primary);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-icon svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: white;
+  }
+}
