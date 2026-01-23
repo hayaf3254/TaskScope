@@ -1,5 +1,5 @@
-import { LoginScreen } from "@/components/features/auth/LoginScreen";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <LoginScreen />;
+  redirect("/login");
 }
