@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { InputField } from "@/components/ui/InputField";
 import { login, register } from "@/lib/api";
 
 export function LoginScreen() {
@@ -18,7 +19,6 @@ export function LoginScreen() {
     e.preventDefault();
     setError("");
 
-    // バリデーション
     if (!email || !password) {
       setError("メールアドレスとパスワードを入力してください");
       return;
@@ -42,17 +42,16 @@ export function LoginScreen() {
       return;
     }
 
-    // 成功時: ダッシュボードへリダイレクト（後で実装）
     window.location.href = "/";
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-50">
       <div className="w-full max-w-sm">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="app-icon mx-auto mb-4">
-            <SquareArrowOutUpRight strokeWidth={2.5} />
+            <ArrowUpRight />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-1">TaskScope</h1>
           <p className="text-sm text-gray-500">
@@ -63,7 +62,7 @@ export function LoginScreen() {
         {/* Form Card */}
         <Card>
           {/* Tabs */}
-          <div className="flex border-b border-gray-200 mb-6">
+          <div className="flex mb-6">
             <button
               type="button"
               onClick={() => setIsLoginTab(true)}
@@ -82,58 +81,38 @@ export function LoginScreen() {
 
           {/* Form */}
           <form onSubmit={handleSubmit}>
-            <div className="space-y-5">
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  メールアドレス
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="input-underline"
-                  placeholder="example@email.com"
-                />
-              </div>
+            <div className="space-y-4">
+              <InputField
+                label="メールアドレス"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="example@email.com"
+              />
 
-              {/* Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  パスワード
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input-underline"
-                  placeholder="8文字以上"
-                />
-              </div>
+              <InputField
+                label="パスワード"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="8文字以上"
+              />
 
-              {/* Confirm Password (register only) */}
               {!isLoginTab && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    パスワード（確認）
-                  </label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="input-underline"
-                    placeholder="もう一度入力"
-                  />
-                </div>
+                <InputField
+                  label="パスワード（確認）"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="もう一度入力"
+                />
               )}
             </div>
 
-            {/* Error Message */}
             {error && (
               <p className="mt-4 text-sm text-red-500 text-center">{error}</p>
             )}
 
-            {/* Submit Button */}
             <PrimaryButton type="submit" disabled={isLoading} className="mt-6">
               {isLoading ? "..." : isLoginTab ? "ログイン" : "新規登録"}
             </PrimaryButton>

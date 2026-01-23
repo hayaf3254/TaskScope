@@ -8,8 +8,8 @@
      -------------------------------- */
   .card {
     background-color: white;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     padding: 1.5rem;
   }
 
@@ -22,7 +22,7 @@
     color: white;
     font-weight: 600;
     padding: 0.875rem 1.5rem;
-    border-radius: 0.75rem;
+    border-radius: 0.625rem;
     transition: background-color 0.2s ease;
     cursor: pointer;
     border: none;
@@ -38,25 +38,26 @@
   }
 
   /* --------------------------------
-     Input (underline style)
+     Input Field (bordered style)
      -------------------------------- */
-  .input-underline {
+  .input-field {
     width: 100%;
-    padding: 0.75rem 0;
-    border: none;
-    border-bottom: 1px solid var(--color-border);
-    background: transparent;
-    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.9375rem;
     outline: none;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .input-underline::placeholder {
+  .input-field::placeholder {
     color: var(--color-placeholder);
   }
 
-  .input-underline:focus {
-    border-bottom-color: var(--color-primary);
+  .input-field:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(75, 123, 245, 0.1);
   }
 
   /* --------------------------------
@@ -67,16 +68,18 @@
     padding-bottom: 0.75rem;
     text-align: center;
     font-weight: 600;
+    font-size: 1rem;
     color: var(--color-text-muted);
     background: none;
     border: none;
+    border-bottom: 2px solid transparent;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, border-color 0.2s ease;
   }
 
   .tab-active {
     color: var(--color-primary);
-    border-bottom: 2px solid var(--color-primary);
+    border-bottom-color: var(--color-primary);
   }
 
   /* --------------------------------
@@ -93,8 +96,20 @@
   }
 
   .app-icon svg {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2rem;
+    height: 2rem;
     color: white;
+    stroke-width: 2.5;
+  }
+
+  /* --------------------------------
+     Form Label
+     -------------------------------- */
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    margin-bottom: 0.5rem;
   }
 }
