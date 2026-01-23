@@ -1,0 +1,724 @@
+openapi: 3.0.3
+info:
+  title: TaskScope API
+  version: "0.2.1"
+  description: |
+    TaskScope MVP API specification (cookie-based JWT auth).
+    Base URL is /api (see servers). All authenticated endpoints require the httpOnly cookie `access_token`.
+servers:
+  - url: /api
+
+tags:
+  - name: Auth
+  - name: Me
+  - name: Settings
+  - name: Tasks
+  - name: Daily
+  - name: Stamps
+  - name: Weekly
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+
+  schemas:
+    User:
+      type: object
+      required: [id, email]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+
+    Settings:
+      type: object
+      required: [timezone, week_start]
+      properties:
+        weekly_target_percent:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 100
+          description: Weekly target percentage (0-100). Null if not set.
+        timezone:
+          type: string
+          example: Asia/Tokyo
+        week_start:
+          type: integer
+          example: 1
+          description: "Week start day. MVP fixed to 1 (Mon)."
+
+    Task:
+      type: object
+      required: [id, title, weight, is_active, archived_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        weight:
+          type: integer
+          description: Recommended 1-10 (MVP may accept wider range as integer).
+        is_active:
+          type: boolean
+        archived_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    DailyTaskItem:
+      type: object
+      required: [taskId, title, weight, achievement_percent]
+      properties:
+        taskId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        weight:
+          type: integer
+        achievement_percent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        # percent_before_full intentionally omitted from MVP API
+
+    DailyGetResponse:
+      type: object
+      required: [date, tasks, is_no_task_day]
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2026-01-09"
+        denominator_weight:
+          type: integer
+          nullable: true
+        weighted_numerator:
+          type: number
+          nullable: true
+        daily_percent:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 100
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyTaskItem"
+        is_no_task_day:
+          type: boolean
+
+    DailySaveRequest:
+      type: object
+      required: [date, taskAchievements]
+      properties:
+        date:
+          type: string
+          format: date
+        taskAchievements:
+          type: array
+          description: |
+            Full list of achievements for the day's active tasks (no diffs).
+            Must include all active taskIds exactly once.
+          items:
+            type: object
+            required: [taskId, percent]
+            properties:
+              taskId:
+                type: string
+                format: uuid
+              percent:
+                type: integer
+                minimum: 0
+                maximum: 100
+
+    DailySaveResponse:
+      type: object
+      required: [date, denominator_weight, weighted_numerator, daily_percent]
+      properties:
+        date:
+          type: string
+          format: date
+        denominator_weight:
+          type: integer
+          nullable: true
+        weighted_numerator:
+          type: number
+          nullable: true
+        daily_percent:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 100
+
+    StampRequest:
+      type: object
+      required: [date]
+      properties:
+        date:
+          type: string
+          format: date
+
+    StampStatusResponse:
+      type: object
+      required: [date, stamped, streak_current, streak_best]
+      properties:
+        date:
+          type: string
+          format: date
+        stamped:
+          type: boolean
+        streak_current:
+          type: integer
+          minimum: 0
+        streak_best:
+          type: integer
+          minimum: 0
+
+    WeeklyDay:
+      type: object
+      required: [date, daily_percent, is_no_task_day]
+      properties:
+        date:
+          type: string
+          format: date
+        daily_percent:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 100
+        is_no_task_day:
+          type: boolean
+
+    WeeklyResponse:
+      type: object
+      required: [week_start, week_end, days, weekly_average, target_percent]
+      properties:
+        week_start:
+          type: string
+          format: date
+        week_end:
+          type: string
+          format: date
+        days:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeeklyDay"
+        weekly_average:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: |
+            Weekly average over 7 days. Null daily_percent days are treated as 0 in the average.
+        target_percent:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 100
+
+    ErrorObject:
+      type: object
+      required: [code, message, fields, details]
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            type: string
+          description: Field-specific validation errors.
+        details:
+          type: object
+          additionalProperties: true
+          description: Extra data (e.g., missingTaskIds).
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          $ref: "#/components/schemas/ErrorObject"
+
+  responses:
+    Unauthorized:
+      description: Unauthorized (missing/invalid cookie)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            unauthorized:
+              value:
+                error:
+                  code: UNAUTHORIZED
+                  message: "ログインが必要です"
+                  fields: {}
+                  details: {}
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            task_forbidden:
+              value:
+                error:
+                  code: TASK_FORBIDDEN
+                  message: "指定された taskId にアクセスできません"
+                  fields:
+                    taskAchievements: "contains taskId(s) not owned by user"
+                  details:
+                    forbiddenTaskIds: ["uuid_other_user_task"]
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            invalid_percent:
+              value:
+                error:
+                  code: PERCENT_OUT_OF_RANGE
+                  message: "percent は 0〜100 の範囲で指定してください"
+                  fields:
+                    taskAchievements[1].percent: "out of range"
+                  details:
+                    min: 0
+                    max: 100
+
+    ConflictTaskSetMismatch:
+      description: Conflict (active task set mismatch; client should refresh and retry)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            task_set_mismatch:
+              value:
+                error:
+                  code: TASK_SET_MISMATCH
+                  message: "有効タスクの一覧と送信内容が一致しません。再読み込みしてから保存してください。"
+                  fields:
+                    taskAchievements: "must include all active tasks exactly once"
+                  details:
+                    missingTaskIds: ["uuid_active_missing1"]
+                    extraTaskIds: ["uuid_not_active1"]
+                    currentActiveTaskIds: ["uuid_active1", "uuid_active2", "uuid_active3"]
+
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register user (sets JWT cookie)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        "201":
+          description: Registered; JWT cookie is set.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [user]
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login (sets JWT cookie)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        "200":
+          description: Logged in; JWT cookie is set.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [user]
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout (clears JWT cookie)
+      security:
+        - cookieAuth: []
+      responses:
+        "204":
+          description: Logged out; cookie cleared.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /me:
+    get:
+      tags: [Me]
+      summary: Get current user and settings
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [user, settings]
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+                  settings:
+                    $ref: "#/components/schemas/Settings"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /settings:
+    patch:
+      tags: [Settings]
+      summary: Update settings (MVP: weekly_target_percent)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                weekly_target_percent:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                  maximum: 100
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [settings]
+                properties:
+                  settings:
+                    $ref: "#/components/schemas/Settings"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /tasks:
+    get:
+      tags: [Tasks]
+      summary: List tasks
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: active
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [true, false, all]
+            default: true
+          description: Filter by active state. "all" returns all non-archived tasks.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tasks]
+                properties:
+                  tasks:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Task"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      tags: [Tasks]
+      summary: Create task (duplicate titles allowed)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, weight]
+              properties:
+                title:
+                  type: string
+                weight:
+                  type: integer
+                is_active:
+                  type: boolean
+                  default: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [task]
+                properties:
+                  task:
+                    $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /tasks/{id}:
+    patch:
+      tags: [Tasks]
+      summary: Update task (partial)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                weight:
+                  type: integer
+                is_active:
+                  type: boolean
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [task]
+                properties:
+                  task:
+                    $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Tasks]
+      summary: Archive task (soft delete)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Archived
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /daily:
+    get:
+      tags: [Daily]
+      summary: Get daily view data
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: JST date (YYYY-MM-DD)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyGetResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /daily/check:
+    post:
+      tags: [Daily]
+      summary: Save daily check (full list; upsert)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailySaveRequest"
+      responses:
+        "200":
+          description: Saved (server recalculates cached daily_percent)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailySaveResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/ConflictTaskSetMismatch"
+
+  /stamps:
+    post:
+      tags: [Stamps]
+      summary: Stamp the day (idempotent)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StampRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StampStatusResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /stamps/status:
+    get:
+      tags: [Stamps]
+      summary: Get stamp status for a date
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StampStatusResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /weekly:
+    get:
+      tags: [Weekly]
+      summary: Get weekly summary (7-day fixed; null days count as 0 in average)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: week_start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Monday date (YYYY-MM-DD) in JST.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeeklyResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
