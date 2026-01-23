@@ -33,7 +33,6 @@ services:
     volumes:
       - ../apps/api:/app
       - api_node_modules:/app/node_modules
-    command: ["npm","run","dev"]
 
 volumes:
   web_node_modules:
