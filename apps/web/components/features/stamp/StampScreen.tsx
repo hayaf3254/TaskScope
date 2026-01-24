@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { NavBar, TabId } from "@/components/ui/NavBar";
 import { getStampStatus, postStamp } from "@/lib/api";
 
 // 今日の日付をYYYY-MM-DD形式で取得
@@ -64,6 +65,17 @@ export function StampScreen() {
     router.push("/today");
   }
 
+  // タブ切り替え
+  function handleTabChange(tab: TabId) {
+    const routes: Record<TabId, string> = {
+      home: "/stamp",
+      today: "/today",
+      weekly: "/weekly",
+      tasks: "/tasks",
+    };
+    router.push(routes[tab]);
+  }
+
   if (loading) {
     return (
       <div className="stamp-bg flex items-center justify-center">
@@ -114,6 +126,12 @@ export function StampScreen() {
           今日のタスクへ
         </PrimaryButton>
       </div>
+
+      {/* フッター分の余白 */}
+      <div className="h-20" />
+
+      {/* ナビゲーションバー */}
+      <NavBar currentTab="home" onTabChange={handleTabChange} />
     </div>
   );
 }
