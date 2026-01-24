@@ -1,0 +1,69 @@
+/* ===========================================
+   TaskScope - NavBar Styles
+   =========================================== */
+
+@layer components {
+  /* --------------------------------
+     Container
+     -------------------------------- */
+  .navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 28rem;
+    margin: 0 auto;
+    background: white;
+    border-top: 1px solid #E5E7EB;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  /* --------------------------------
+     Tab Button
+     -------------------------------- */
+  .navbar-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    color: #9CA3AF;
+  }
+
+  .navbar-tab:hover {
+    color: #6B7280;
+  }
+
+  /* --------------------------------
+     Active State
+     -------------------------------- */
+  .navbar-tab-active {
+    background-color: #EFF6FF;
+    color: #2563EB;
+  }
+
+  .navbar-tab-active:hover {
+    color: #2563EB;
+  }
+
+  /* --------------------------------
+     Icon & Label
+     -------------------------------- */
+  .navbar-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .navbar-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
