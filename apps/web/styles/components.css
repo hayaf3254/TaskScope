@@ -1,0 +1,115 @@
+/* ===========================================
+   TaskScope - Component Styles
+   =========================================== */
+
+@layer components {
+  /* --------------------------------
+     Card
+     -------------------------------- */
+  .card {
+    background-color: white;
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    padding: 1.5rem;
+  }
+
+  /* --------------------------------
+     Primary Button
+     -------------------------------- */
+  .btn-primary {
+    width: 100%;
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.625rem;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* --------------------------------
+     Input Field (bordered style)
+     -------------------------------- */
+  .input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.9375rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .input-field::placeholder {
+    color: var(--color-placeholder);
+  }
+
+  .input-field:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(75, 123, 245, 0.1);
+  }
+
+  /* --------------------------------
+     Tab
+     -------------------------------- */
+  .tab {
+    flex: 1;
+    padding-bottom: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .tab-active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  /* --------------------------------
+     App Icon
+     -------------------------------- */
+  .app-icon {
+    width: 4rem;
+    height: 4rem;
+    background-color: var(--color-primary);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-icon svg {
+    width: 2rem;
+    height: 2rem;
+    color: white;
+    stroke-width: 2.5;
+  }
+
+  /* --------------------------------
+     Form Label
+     -------------------------------- */
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    margin-bottom: 0.5rem;
+  }
+}

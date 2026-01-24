@@ -9,6 +9,8 @@ RUN npm ci || npm install
 
 FROM base AS dev
 ENV NODE_ENV=development
-COPY --from=deps /app/node_modules ./node_modules
+# entrypoint スクリプトをコピー
+COPY infra/docker/api-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 EXPOSE 3001
-CMD ["npm","run","dev"]
+ENTRYPOINT ["/entrypoint.sh"]

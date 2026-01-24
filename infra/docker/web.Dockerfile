@@ -12,10 +12,11 @@ RUN npm ci || npm install
 # dev: 開発サーバ用（compose からこの target を使う）
 FROM base AS dev
 ENV NODE_ENV=development
-COPY --from=deps /app/node_modules ./node_modules
-# ソースは compose の volume で上書きされる想定（ここではコピー不要でもOK）
+# entrypoint スクリプトをコピー
+COPY infra/docker/web-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 EXPOSE 3000
-CMD ["npm","run","dev","--","-H","0.0.0.0","-p","3000"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 # build: 本番ビルド用
 FROM base AS build
