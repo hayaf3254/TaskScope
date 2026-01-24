@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
-import { getStampStatus, postStamp, StampResponse } from "@/lib/api";
+import { getStampStatus, postStamp } from "@/lib/api";
 
 // 今日の日付をYYYY-MM-DD形式で取得
 function getTodayString(): string {
@@ -20,6 +21,7 @@ function formatDateWithDay(dateStr: string): string {
 }
 
 export function StampScreen() {
+  const router = useRouter();
   const [stamped, setStamped] = useState(false);
   const [streakCurrent, setStreakCurrent] = useState(0);
   const [streakBest, setStreakBest] = useState(0);
@@ -57,10 +59,9 @@ export function StampScreen() {
     setPressing(false);
   }
 
-  // 今日のタスクへ遷移（仮）
+  // 今日のタスクへ遷移
   function handleGoToTask() {
-    // TODO: 実装後にルーティング追加
-    console.log("今日のタスクへ");
+    router.push("/today");
   }
 
   if (loading) {
