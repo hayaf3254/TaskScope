@@ -1,0 +1,119 @@
+/* ===========================================
+   TaskScope - Stamp Screen Styles
+   =========================================== */
+
+@layer components {
+  /* --------------------------------
+     Stamp Screen Background
+     -------------------------------- */
+  .stamp-bg {
+    min-height: 100vh;
+    max-width: 28rem; /* max-w-md相当（448px）モバイル向け */
+    margin: 0 auto;
+    background: linear-gradient(to bottom, #FFB347 0%, #FFB347 25%, white 50%, white 100%);
+  }
+
+  /* --------------------------------
+     Header
+     -------------------------------- */
+  .stamp-header {
+    padding: 2rem 1.5rem 1rem;
+  }
+
+  .stamp-header h1 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--color-foreground);
+    margin-bottom: 0.25rem;
+  }
+
+  .stamp-header p {
+    font-size: 1rem;
+    color: #4B5563;
+  }
+
+  /* --------------------------------
+     Main Card
+     -------------------------------- */
+  .stamp-card {
+    background: white;
+    border-radius: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 2.5rem 1.5rem;
+    margin: 0 1rem;
+    text-align: center;
+  }
+
+  /* --------------------------------
+     Stamp Button
+     -------------------------------- */
+  .stamp-button {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    background-color: #FF9F43;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .stamp-button:hover:not(:disabled) {
+    transform: scale(1.05);
+  }
+
+  .stamp-button:disabled {
+    cursor: default;
+    background-color: #FF9F43;
+  }
+
+  .stamp-button-icon {
+    font-size: 3rem;
+  }
+
+  /* --------------------------------
+     Labels & Text
+     -------------------------------- */
+  .stamp-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4B5563;
+    margin-bottom: 1rem;
+  }
+
+  .stamp-label-done {
+    color: #F97316;
+  }
+
+  /* --------------------------------
+     Streak Display
+     -------------------------------- */
+  .stamp-streak {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stamp-streak-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-foreground);
+  }
+
+  .stamp-best {
+    font-size: 0.875rem;
+    color: #6B7280;
+  }
+
+  /* --------------------------------
+     Action Area
+     -------------------------------- */
+  .stamp-action {
+    padding: 1.5rem 1rem;
+  }
+}
