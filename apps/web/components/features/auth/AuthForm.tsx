@@ -52,7 +52,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     }
 
     if (isLogin) {
-      router.push("/dashboard");
+      router.push("/stamp");
     } else {
       setSuccess("登録が完了しました。ログイン画面に移動します...");
       setTimeout(() => {
