@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { z } from "zod";
 import { pool } from "./db";
 import authRouter from "./routes/auth";
+import stampsRouter from "./routes/stamps";
 
 const Env = z.object({
   NODE_ENV: z.string().default("development"),
@@ -47,5 +48,8 @@ app.get("/api/db/ping", async (_req, res) => {
 
 // 認証API
 app.use("/api/auth", authRouter);
+
+// スタンプAPI
+app.use("/api/stamps", stampsRouter);
 
 app.listen(env.PORT, () => console.log(`[api] http://localhost:${env.PORT}`));

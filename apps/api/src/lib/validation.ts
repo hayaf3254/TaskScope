@@ -12,3 +12,15 @@ export const loginSchema = z.object({
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+
+// ========== Stamps ==========
+// YYYY-MM-DD 形式を正規表現でチェック
+const dateStringSchema = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "date は YYYY-MM-DD 形式で指定してください");
+
+export const stampSchema = z.object({
+  date: dateStringSchema,
+});
+
+export type StampInput = z.infer<typeof stampSchema>;
