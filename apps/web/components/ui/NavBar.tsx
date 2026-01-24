@@ -1,3 +1,6 @@
+import { ReactNode } from "react";
+import { HomeIcon } from "@/components/icons";
+
 export type TabId = "home" | "today" | "weekly" | "tasks";
 
 type NavBarProps = {
@@ -5,11 +8,18 @@ type NavBarProps = {
   onTabChange: (tab: TabId) => void;
 };
 
-const tabs: { id: TabId; icon: string; label: string }[] = [
-  { id: "home", icon: "🏠", label: "ホーム" },
-  { id: "today", icon: "✓", label: "今日" },
-  { id: "weekly", icon: "📈", label: "週次" },
-  { id: "tasks", icon: "☰", label: "タスク" },
+type TabConfig = {
+  id: TabId;
+  icon: ReactNode;
+  label: string;
+};
+
+// TODO: 他のアイコンもSVGに差し替え予定
+const tabs: TabConfig[] = [
+  { id: "home", icon: <HomeIcon size={24} />, label: "ホーム" },
+  { id: "today", icon: <span>✓</span>, label: "今日" },
+  { id: "weekly", icon: <span>📈</span>, label: "週次" },
+  { id: "tasks", icon: <span>☰</span>, label: "タスク" },
 ];
 
 export function NavBar({ currentTab, onTabChange }: NavBarProps) {
