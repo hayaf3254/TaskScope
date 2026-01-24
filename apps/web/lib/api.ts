@@ -76,3 +76,22 @@ export async function logout() {
     method: "POST",
   });
 }
+
+// Stamps API
+export type StampResponse = {
+  date: string;
+  stamped: boolean;
+  streak_current: number;
+  streak_best: number;
+};
+
+export async function postStamp(date: string) {
+  return request<StampResponse>("/stamps", {
+    method: "POST",
+    body: JSON.stringify({ date }),
+  });
+}
+
+export async function getStampStatus(date: string) {
+  return request<StampResponse>(`/stamps/status?date=${date}`);
+}
