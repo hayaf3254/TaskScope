@@ -8,6 +8,8 @@
      -------------------------------- */
   .stamp-bg {
     min-height: 100vh;
+    max-width: 28rem; /* max-w-md相当（448px）モバイル向け */
+    margin: 0 auto;
     background: linear-gradient(to bottom, #FFB347 0%, #FFB347 25%, white 50%, white 100%);
   }
 
