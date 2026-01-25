@@ -52,3 +52,42 @@ export const dailyCheckSchema = z.object({
 });
 
 export type DailyCheckInput = z.infer<typeof dailyCheckSchema>;
+
+// ========== Tasks ==========
+export const taskCreateSchema = z.object({
+  title: z
+    .string()
+    .min(1, "タイトルを入力してください")
+    .max(100, "タイトルは100文字以内で入力してください"),
+  weight: z
+    .number()
+    .int("weight は整数で指定してください")
+    .min(1, "weight は 1〜10 の範囲で指定してください")
+    .max(10, "weight は 1〜10 の範囲で指定してください"),
+  is_active: z.boolean().optional().default(true),
+});
+
+export type TaskCreateInput = z.infer<typeof taskCreateSchema>;
+
+export const taskUpdateSchema = z.object({
+  title: z
+    .string()
+    .min(1, "タイトルを入力してください")
+    .max(100, "タイトルは100文字以内で入力してください")
+    .optional(),
+  weight: z
+    .number()
+    .int("weight は整数で指定してください")
+    .min(1, "weight は 1〜10 の範囲で指定してください")
+    .max(10, "weight は 1〜10 の範囲で指定してください")
+    .optional(),
+  is_active: z.boolean().optional(),
+});
+
+export type TaskUpdateInput = z.infer<typeof taskUpdateSchema>;
+
+export const taskQuerySchema = z.object({
+  active: z.enum(["true", "false", "all"]).optional().default("true"),
+});
+
+export type TaskQueryInput = z.infer<typeof taskQuerySchema>;
