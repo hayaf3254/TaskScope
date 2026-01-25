@@ -3,6 +3,8 @@
 @import "../styles/stamp.css";
 @import "../styles/navbar.css";
 @import "../styles/today.css";
+@import "../styles/tasks.css";
+@import "../styles/modal.css";
 
 /* ===========================================
    TaskScope - Theme Variables
