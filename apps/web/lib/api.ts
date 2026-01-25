@@ -95,3 +95,41 @@ export async function postStamp(date: string) {
 export async function getStampStatus(date: string) {
   return request<StampResponse>(`/stamps/status?date=${date}`);
 }
+
+// Daily API
+export type DailyTask = {
+  taskId: string;
+  title: string;
+  weight: number;
+  achievement_percent: number;
+};
+
+export type DailyResponse = {
+  date: string;
+  denominator_weight: number | null;
+  weighted_numerator: number | null;
+  daily_percent: number | null;
+  tasks: DailyTask[];
+  is_no_task_day: boolean;
+};
+
+export type DailyCheckResponse = {
+  date: string;
+  denominator_weight: number;
+  weighted_numerator: number;
+  daily_percent: number;
+};
+
+export async function getDaily(date: string) {
+  return request<DailyResponse>(`/daily?date=${date}`);
+}
+
+export async function postDailyCheck(
+  date: string,
+  taskAchievements: { taskId: string; percent: number }[]
+) {
+  return request<DailyCheckResponse>("/daily/check", {
+    method: "POST",
+    body: JSON.stringify({ date, taskAchievements }),
+  });
+}
