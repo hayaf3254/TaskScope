@@ -4,12 +4,18 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { NavBar, TabId } from "@/components/ui/NavBar";
 import { TaskCard } from "@/components/ui/TaskCard";
-import { getTasks, deleteTask, Task } from "@/lib/api";
+import { TaskModal } from "@/components/ui/TaskModal";
+import { getTasks, createTask, updateTask, deleteTask, Task } from "@/lib/api";
 
 export function TaskManagementScreen() {
   const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // モーダル状態
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"add" | "edit">("add");
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   // 初期ロード
   useEffect(() => {
@@ -24,16 +30,46 @@ export function TaskManagementScreen() {
     fetchTasks();
   }, []);
 
-  // タスク追加（モーダル実装は後で）
+  // タスク追加モーダルを開く
   function handleAdd() {
-    console.log("追加ボタン押下");
-    // TODO: モーダル実装
+    setModalMode("add");
+    setEditingTask(null);
+    setModalOpen(true);
   }
 
-  // タスク編集（モーダル実装は後で）
-  function handleEdit(taskId: string) {
-    console.log("編集ボタン押下:", taskId);
-    // TODO: モーダル実装
+  // タスク編集モーダルを開く
+  function handleEdit(task: Task) {
+    setModalMode("edit");
+    setEditingTask(task);
+    setModalOpen(true);
+  }
+
+  // モーダルを閉じる
+  function handleCloseModal() {
+    setModalOpen(false);
+    setEditingTask(null);
+  }
+
+  // 保存処理（追加 or 編集）
+  async function handleSave(title: string, weight: number, isActive: boolean) {
+    if (modalMode === "add") {
+      const { data, error } = await createTask(title, weight, isActive);
+      if (data && !error) {
+        setTasks((prev) => [...prev, data.task]);
+      }
+    } else if (modalMode === "edit" && editingTask) {
+      const { data, error } = await updateTask(editingTask.id, {
+        title,
+        weight,
+        is_active: isActive,
+      });
+      if (data && !error) {
+        setTasks((prev) =>
+          prev.map((t) => (t.id === editingTask.id ? data.task : t))
+        );
+      }
+    }
+    handleCloseModal();
   }
 
   // タスク削除
@@ -89,12 +125,29 @@ export function TaskManagementScreen() {
               title={task.title}
               weight={task.weight}
               isActive={task.is_active}
-              onEdit={() => handleEdit(task.id)}
+              onEdit={() => handleEdit(task)}
               onDelete={() => handleDelete(task.id)}
             />
           ))}
         </div>
       )}
+
+      {/* モーダル */}
+      <TaskModal
+        isOpen={modalOpen}
+        onClose={handleCloseModal}
+        onSave={handleSave}
+        mode={modalMode}
+        initialData={
+          editingTask
+            ? {
+                title: editingTask.title,
+                weight: editingTask.weight,
+                isActive: editingTask.is_active,
+              }
+            : undefined
+        }
+      />
 
       {/* ナビゲーションバー */}
       <NavBar currentTab="tasks" onTabChange={handleTabChange} />
