@@ -133,3 +133,47 @@ export async function postDailyCheck(
     body: JSON.stringify({ date, taskAchievements }),
   });
 }
+
+// Tasks API
+export type Task = {
+  id: string;
+  title: string;
+  weight: number;
+  is_active: boolean;
+  archived_at: string | null;
+};
+
+type TasksResponse = {
+  tasks: Task[];
+};
+
+type TaskResponse = {
+  task: Task;
+};
+
+export async function getTasks(active: "true" | "false" | "all" = "true") {
+  return request<TasksResponse>(`/tasks?active=${active}`);
+}
+
+export async function createTask(title: string, weight: number, is_active = true) {
+  return request<TaskResponse>("/tasks", {
+    method: "POST",
+    body: JSON.stringify({ title, weight, is_active }),
+  });
+}
+
+export async function updateTask(
+  id: string,
+  updates: { title?: string; weight?: number; is_active?: boolean }
+) {
+  return request<TaskResponse>(`/tasks/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(updates),
+  });
+}
+
+export async function deleteTask(id: string) {
+  return request<void>(`/tasks/${id}`, {
+    method: "DELETE",
+  });
+}
