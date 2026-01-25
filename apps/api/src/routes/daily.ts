@@ -5,6 +5,11 @@ import { dailyGetSchema, dailyCheckSchema } from "../lib/validation";
 import { errorResponse, zodErrorToFields } from "../lib/errors";
 import { requireAuth, AuthRequest } from "../middleware/auth";
 
+// TODO: リファクタ候補
+// - 行102-148: バリデーションエラー分岐を共通関数化
+// - 行186-210: daily_check_items の bulk upsert (1クエリ化)
+// - 行212-228: daily_percent計算をGET側(行79-87)と共通化
+
 const router = Router();
 
 // ========================================
