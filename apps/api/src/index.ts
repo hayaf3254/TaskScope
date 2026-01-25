@@ -8,6 +8,7 @@ import { z } from "zod";
 import { pool } from "./db";
 import authRouter from "./routes/auth";
 import stampsRouter from "./routes/stamps";
+import dailyRouter from "./routes/daily";
 
 const Env = z.object({
   NODE_ENV: z.string().default("development"),
@@ -51,5 +52,8 @@ app.use("/api/auth", authRouter);
 
 // スタンプAPI
 app.use("/api/stamps", stampsRouter);
+
+// 日次API
+app.use("/api/daily", dailyRouter);
 
 app.listen(env.PORT, () => console.log(`[api] http://localhost:${env.PORT}`));
