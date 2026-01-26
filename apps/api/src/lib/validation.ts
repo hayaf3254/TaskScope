@@ -91,3 +91,10 @@ export const taskQuerySchema = z.object({
 });
 
 export type TaskQueryInput = z.infer<typeof taskQuerySchema>;
+
+// ========== Weekly ==========
+export const weeklyGetSchema = z.object({
+  week_start: dateStringSchema,
+});
+
+export type WeeklyGetInput = z.infer<typeof weeklyGetSchema>;
