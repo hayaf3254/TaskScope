@@ -61,7 +61,7 @@ export function WeeklyScreen() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center pb-20">
+      <div className="weekly-screen flex items-center justify-center">
         <p className="text-gray-500">読み込み中...</p>
       </div>
     );
@@ -73,12 +73,12 @@ export function WeeklyScreen() {
     weeklyData.weekly_average >= (weeklyData.target_percent ?? 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
+    <div className="weekly-screen">
       {/* ヘッダー */}
-      <div className="px-6 pt-8 pb-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">週次</h1>
+      <div className="weekly-header">
+        <h1>週次</h1>
         {weeklyData && (
-          <p className="text-sm text-gray-500">
+          <p>
             {formatDateWithDay(weeklyData.week_start)} 〜{" "}
             {formatDateWithDay(weeklyData.week_end)}
           </p>
@@ -86,36 +86,30 @@ export function WeeklyScreen() {
       </div>
 
       {/* グラフエリア */}
-      <div className="px-6">
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          {weeklyData && <WeeklyChart days={weeklyData.days} />}
-        </div>
+      <div className="weekly-chart-card">
+        {weeklyData && <WeeklyChart days={weeklyData.days} />}
       </div>
 
       {/* 統計カード */}
-      <div className="px-6 mt-4 grid grid-cols-2 gap-3">
+      <div className="weekly-stats">
         {/* 週平均 */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-500 mb-1">週平均</p>
-          <p className="text-3xl font-bold text-gray-900">
-            {weeklyData?.weekly_average ?? 0}%
-          </p>
+        <div className="weekly-stat-card">
+          <p className="weekly-stat-label">週平均</p>
+          <p className="weekly-stat-value">{weeklyData?.weekly_average ?? 0}%</p>
         </div>
 
         {/* 目標 */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-500 mb-1">目標</p>
-          <div className="flex items-center gap-2">
-            <p className="text-3xl font-bold text-gray-900">
+        <div className="weekly-stat-card">
+          <p className="weekly-stat-label">目標</p>
+          <div className="weekly-stat-row">
+            <p className="weekly-stat-value">
               {weeklyData?.target_percent ?? "-"}
               {weeklyData?.target_percent !== null && "%"}
             </p>
             {weeklyData?.target_percent !== null && (
               <span
-                className={`text-xs px-2 py-0.5 rounded font-medium ${
-                  isTargetMet
-                    ? "bg-green-100 text-green-700"
-                    : "bg-yellow-100 text-yellow-700"
+                className={`weekly-badge ${
+                  isTargetMet ? "weekly-badge-success" : "weekly-badge-warning"
                 }`}
               >
                 {isTargetMet ? "達成" : "未達"}
@@ -126,11 +120,8 @@ export function WeeklyScreen() {
       </div>
 
       {/* 目標変更ボタン */}
-      <div className="px-6 mt-4">
-        <button
-          onClick={handleChangeTarget}
-          className="w-full py-3 border-2 border-blue-500 text-blue-500 font-semibold rounded-xl bg-white hover:bg-blue-50 transition-colors"
-        >
+      <div className="weekly-action">
+        <button onClick={handleChangeTarget} className="weekly-action-button">
           目標を変更
         </button>
       </div>
