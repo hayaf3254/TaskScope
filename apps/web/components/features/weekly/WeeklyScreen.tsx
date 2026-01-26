@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { NavBar, TabId } from "@/components/ui/NavBar";
+import { WeeklyGoalModal } from "@/components/ui/WeeklyGoalModal";
 import { WeeklyChart } from "./WeeklyChart";
 import { getWeekly, WeeklyResponse } from "@/lib/api";
 
@@ -29,6 +30,7 @@ export function WeeklyScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [weeklyData, setWeeklyData] = useState<WeeklyResponse | null>(null);
+  const [showGoalModal, setShowGoalModal] = useState(false);
 
   useEffect(() => {
     async function fetchWeekly() {
@@ -55,8 +57,18 @@ export function WeeklyScreen() {
 
   // 目標変更ボタン
   function handleChangeTarget() {
-    console.log("目標を変更 clicked");
-    // TODO: モーダル実装
+    setShowGoalModal(true);
+  }
+
+  // 目標保存
+  async function handleSaveGoal(goal: number | null) {
+    // TODO: PATCH /settings API実装後に接続
+    console.log("Save goal:", goal);
+    // ローカル更新（仮）
+    if (weeklyData) {
+      setWeeklyData({ ...weeklyData, target_percent: goal });
+    }
+    setShowGoalModal(false);
   }
 
   if (loading) {
@@ -128,6 +140,14 @@ export function WeeklyScreen() {
 
       {/* ナビゲーションバー */}
       <NavBar currentTab="weekly" onTabChange={handleTabChange} />
+
+      {/* 目標設定モーダル */}
+      <WeeklyGoalModal
+        isOpen={showGoalModal}
+        onClose={() => setShowGoalModal(false)}
+        currentGoal={weeklyData?.target_percent ?? null}
+        onSave={handleSaveGoal}
+      />
     </div>
   );
 }
