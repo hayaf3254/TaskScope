@@ -98,3 +98,16 @@ export const weeklyGetSchema = z.object({
 });
 
 export type WeeklyGetInput = z.infer<typeof weeklyGetSchema>;
+
+// ========== Settings ==========
+export const settingsUpdateSchema = z.object({
+  weekly_target_percent: z
+    .number()
+    .int("週目標は整数で指定してください")
+    .min(0, "週目標は 0〜100 の範囲で指定してください")
+    .max(100, "週目標は 0〜100 の範囲で指定してください")
+    .nullable()
+    .optional(),
+});
+
+export type SettingsUpdateInput = z.infer<typeof settingsUpdateSchema>;
