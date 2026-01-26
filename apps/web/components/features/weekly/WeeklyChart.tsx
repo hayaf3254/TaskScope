@@ -65,7 +65,7 @@ export function WeeklyChart({ days }: WeeklyChartProps) {
               position="top"
               fontSize={12}
               fill="#6B7280"
-              formatter={(value: number) => `${value}%`}
+              formatter={(value) => `${value}%`}
             />
           </Bar>
         </BarChart>
