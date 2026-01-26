@@ -177,3 +177,22 @@ export async function deleteTask(id: string) {
     method: "DELETE",
   });
 }
+
+// Weekly API
+export type WeeklyDay = {
+  date: string;
+  daily_percent: number | null;
+  is_no_task_day: boolean;
+};
+
+export type WeeklyResponse = {
+  week_start: string;
+  week_end: string;
+  days: WeeklyDay[];
+  weekly_average: number;
+  target_percent: number | null;
+};
+
+export async function getWeekly(weekStart: string) {
+  return request<WeeklyResponse>(`/weekly?week_start=${weekStart}`);
+}
