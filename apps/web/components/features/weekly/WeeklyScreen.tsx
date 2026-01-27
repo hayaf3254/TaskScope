@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { NavBar, TabId } from "@/components/ui/NavBar";
 import { WeeklyGoalModal } from "@/components/ui/WeeklyGoalModal";
 import { WeeklyChart } from "./WeeklyChart";
-import { getWeekly, WeeklyResponse } from "@/lib/api";
+import { getWeekly, updateSettings, WeeklyResponse } from "@/lib/api";
 
 // 今週の月曜日を取得
 function getWeekStart(): string {
@@ -62,11 +62,15 @@ export function WeeklyScreen() {
 
   // 目標保存
   async function handleSaveGoal(goal: number | null) {
-    // TODO: PATCH /settings API実装後に接続
-    console.log("Save goal:", goal);
-    // ローカル更新（仮）
-    if (weeklyData) {
-      setWeeklyData({ ...weeklyData, target_percent: goal });
+    const { data, error } = await updateSettings(goal);
+    if (data && !error) {
+      // 成功: ローカル更新
+      if (weeklyData) {
+        setWeeklyData({ ...weeklyData, target_percent: data.settings.weekly_target_percent });
+      }
+    } else {
+      // TODO: エラー表示
+      console.error("Failed to save goal:", error);
     }
     setShowGoalModal(false);
   }

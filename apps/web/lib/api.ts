@@ -196,3 +196,21 @@ export type WeeklyResponse = {
 export async function getWeekly(weekStart: string) {
   return request<WeeklyResponse>(`/weekly?week_start=${weekStart}`);
 }
+
+// Settings API
+export type Settings = {
+  weekly_target_percent: number | null;
+  timezone: string;
+  week_start: number;
+};
+
+type SettingsResponse = {
+  settings: Settings;
+};
+
+export async function updateSettings(weeklyTargetPercent: number | null) {
+  return request<SettingsResponse>("/settings", {
+    method: "PATCH",
+    body: JSON.stringify({ weekly_target_percent: weeklyTargetPercent }),
+  });
+}

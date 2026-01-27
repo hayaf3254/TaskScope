@@ -11,6 +11,7 @@ import stampsRouter from "./routes/stamps";
 import dailyRouter from "./routes/daily";
 import tasksRouter from "./routes/tasks";
 import weeklyRouter from "./routes/weekly";
+import settingsRouter from "./routes/settings";
 
 const Env = z.object({
   NODE_ENV: z.string().default("development"),
@@ -63,5 +64,8 @@ app.use("/api/tasks", tasksRouter);
 
 // 週次API
 app.use("/api/weekly", weeklyRouter);
+
+// 設定API
+app.use("/api/settings", settingsRouter);
 
 app.listen(env.PORT, () => console.log(`[api] http://localhost:${env.PORT}`));
