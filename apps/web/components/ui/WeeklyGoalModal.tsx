@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type WeeklyGoalModalProps = {
   isOpen: boolean;
@@ -17,13 +17,16 @@ export function WeeklyGoalModal({
 }: WeeklyGoalModalProps) {
   const [goalValue, setGoalValue] = useState("");
   const [saving, setSaving] = useState(false);
+  const [prevIsOpen, setPrevIsOpen] = useState(false);
 
-  // 初期値セット
-  useEffect(() => {
-    if (isOpen) {
-      setGoalValue(currentGoal !== null ? String(currentGoal) : "");
-    }
-  }, [isOpen, currentGoal]);
+  // モーダルが開いた瞬間に初期値をセット（レンダー中に更新）
+  if (isOpen && !prevIsOpen) {
+    setGoalValue(currentGoal !== null ? String(currentGoal) : "");
+    setPrevIsOpen(true);
+  }
+  if (!isOpen && prevIsOpen) {
+    setPrevIsOpen(false);
+  }
 
   // 保存処理
   async function handleSave() {
