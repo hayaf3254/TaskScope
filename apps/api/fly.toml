@@ -2,9 +2,9 @@ app = 'taskscope'
 primary_region = 'nrt'
 
 [build]
-  dockerfile = '../../infra/docker/api.Dockerfile'
+  dockerfile = 'infra/docker/api.Dockerfile'
   build-target = 'prod'
-  build-context = '../..'
+  build-context = '.'
 
 [env]
   NODE_ENV = 'production'
