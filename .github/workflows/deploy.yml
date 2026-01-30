@@ -6,12 +6,12 @@ on:
       target:
         description: "デプロイ先"
         required: true
-        default: "vercel"
+        default: "both"
         type: choice
         options:
           - vercel
-          # - flyio  # fly.io移行後に追加
-          # - both   # fly.io移行後に追加
+          - flyio
+          - both
 
 jobs:
   deploy-vercel:
@@ -23,12 +23,18 @@ jobs:
           curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
           echo "✅ Vercel deploy triggered!"
 
-  # fly.io移行後に追加
-  # deploy-flyio:
-  #   if: inputs.target == 'flyio' || inputs.target == 'both'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger Fly.io Deploy
-  #       run: |
-  #         curl -X POST "${{ secrets.FLYIO_DEPLOY_HOOK_URL }}"
-  #         echo "✅ Fly.io deploy triggered!"
+  deploy-flyio:
+    if: inputs.target == 'flyio' || inputs.target == 'both'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Fly.io CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: |
+          flyctl deploy --config apps/api/fly.toml --remote-only
+          echo "✅ Fly.io deploy completed!"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
