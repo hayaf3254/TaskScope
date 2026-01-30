@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type TaskModalProps = {
   isOpen: boolean;
@@ -25,21 +25,24 @@ export function TaskModal({
   const [weight, setWeight] = useState(3);
   const [isActive, setIsActive] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [prevIsOpen, setPrevIsOpen] = useState(false);
 
-  // 初期値セット
-  useEffect(() => {
-    if (isOpen) {
-      if (mode === "edit" && initialData) {
-        setTitle(initialData.title);
-        setWeight(initialData.weight);
-        setIsActive(initialData.isActive);
-      } else {
-        setTitle("");
-        setWeight(3);
-        setIsActive(true);
-      }
+  // モーダルが開いた瞬間に初期値をセット（レンダー中に更新）
+  if (isOpen && !prevIsOpen) {
+    if (mode === "edit" && initialData) {
+      setTitle(initialData.title);
+      setWeight(initialData.weight);
+      setIsActive(initialData.isActive);
+    } else {
+      setTitle("");
+      setWeight(3);
+      setIsActive(true);
     }
-  }, [isOpen, mode, initialData]);
+    setPrevIsOpen(true);
+  }
+  if (!isOpen && prevIsOpen) {
+    setPrevIsOpen(false);
+  }
 
   // 保存処理
   async function handleSave() {
