@@ -1,20 +1,20 @@
 # TaskScope
 ### タスクの「重み」を可視化し、継続を科学する習慣管理アプリ
 
-![デモ動画](ここにアプリが動いているGIF動画を貼る.gif)※近日公開
+![デモ動画](ここにアプリが動いているGIF動画を貼る.gif)
 ## ■ 概要・リンク
 | 項目 | URL |
 | --- | --- |
-| **アプリURL** | [デプロイリンク](https://task-scope-ochre.vercel.app/) |
+| **アプリURL** | [デプロイのリンク](https://task-scope-ochre.vercel.app/) |
 | **Figma (デザイン)** | [Figmaのリンク](https://www.figma.com/proto/0ACM88dzRo81Dtq4wjfZMN/%E3%82%BF%E3%82%B9%E3%82%AF%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%97?node-id=22-176&t=4LvcpUzbNMYkerpU-0&scaling=min-zoom&content-scaling=fixed&page-id=17%3A5&starting-point-node-id=22%3A176) |
 | **設計資料** | [Google Drive](https://drive.google.com/drive/u/0/folders/1e7002Lb9P89eEFyy3Ue3rzfSNWzD9ONw) (ER図 / 仕様書など) |
 
 ---
 
 ## ■ 開発背景と解決する課題
-日々の学習（プログラミング、英語、研究など）を紙で管理していましたが、**「やった/やらない」の二元論**でしか記録できず、重要なタスクを十分にこなせたかが振り返れない課題がありました。
+日々の学習（プログラミング、英語、研究など）を紙で管理していましたが、タスクの重みを考慮した達成率を毎晩ノートの上で手計算しており、その集計作業が大きな負担になっていました。
 
-TaskScopeは、タスクに**「重み（Weight）」**を設定し、日次・週次の達成率を数値化（%）することで、質の高い継続をサポートするアプリです。
+タスクスコープは、この**「手計算していた独自ロジック」をシステム化**し、日次・週次の達成率を瞬時に可視化することで、集計の手間をなくし学習の質を最大化するアプリです。
 
 **【主な機能】**
 * **重み付き達成率:** 単純な消化数ではなく、タスクの重さを考慮した進捗率（0-100%）を算出 
@@ -46,6 +46,7 @@ TaskScopeは、タスクに**「重み（Weight）」**を設定し、日次・�
 型定義の自動生成を活用し、仕様の認識齟齬による手戻りを防いでいます。
 <img width="1198" height="687" alt="image" src="https://github.com/user-attachments/assets/69d654c7-81e5-441b-b76a-0a61fab7d97f" />
 <img width="678" height="888" alt="image" src="https://github.com/user-attachments/assets/b096ac64-f325-4a08-89de-0c4b00593054" />
+
 ※ 図中の「LINE連携機能」はPhase2での実装予定です。今回のMVPには含まれていません。
 
 ### 2. セキュリティを意識した認証設計 (JWT + HttpOnly Cookie)
@@ -73,8 +74,10 @@ GitHub Actionsを導入し、Pull Request時に `Lint`, `Type Check`, `Unit Test
 
 #### ▼ ユースケース図
 <img width="868" height="585" alt="image" src="https://github.com/user-attachments/assets/698dd416-6874-46a9-9c3b-692d088118a8" />
-* ※ 図中の「LINE連携機能」はPhase2での実装予定です。今回のMVPには含まれていません。
+
+※ 図中の「LINE連携機能」はPhase2での実装予定です。今回のMVPには含まれていません。
 
 
 #### ▼ アーキテクチャ図
+
 
