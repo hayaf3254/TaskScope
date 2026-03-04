@@ -33,6 +33,9 @@ async function request<T>(
     const json = await res.json();
 
     if (!res.ok) {
+      if (res.status === 401 && typeof window !== "undefined" && !endpoint.startsWith("/auth/")) {
+        window.location.href = "/login";
+      }
       return { error: json.error };
     }
 
