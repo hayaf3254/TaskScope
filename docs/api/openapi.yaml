@@ -428,7 +428,7 @@ paths:
   /settings:
     patch:
       tags: [Settings]
-      summary: Update settings (MVP: weekly_target_percent)
+      summary: "Update settings (MVP: weekly_target_percent)"
       security:
         - cookieAuth: []
       requestBody:
