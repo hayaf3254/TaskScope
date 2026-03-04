@@ -63,9 +63,12 @@ components:
           format: uuid
         title:
           type: string
+          minLength: 1
+          maxLength: 100
         weight:
           type: integer
-          description: Recommended 1-10 (MVP may accept wider range as integer).
+          minimum: 1
+          maximum: 10
         is_active:
           type: boolean
         archived_at:
@@ -339,6 +342,7 @@ paths:
                 password:
                   type: string
                   format: password
+                  minLength: 8
       responses:
         "201":
           description: Registered; JWT cookie is set.
@@ -424,7 +428,7 @@ paths:
   /settings:
     patch:
       tags: [Settings]
-      summary: Update settings (MVP: weekly_target_percent)
+      summary: "Update settings (MVP: weekly_target_percent)"
       security:
         - cookieAuth: []
       requestBody:
@@ -501,8 +505,12 @@ paths:
               properties:
                 title:
                   type: string
+                  minLength: 1
+                  maxLength: 100
                 weight:
                   type: integer
+                  minimum: 1
+                  maximum: 10
                 is_active:
                   type: boolean
                   default: true
@@ -544,8 +552,12 @@ paths:
               properties:
                 title:
                   type: string
+                  minLength: 1
+                  maxLength: 100
                 weight:
                   type: integer
+                  minimum: 1
+                  maximum: 10
                 is_active:
                   type: boolean
       responses:
