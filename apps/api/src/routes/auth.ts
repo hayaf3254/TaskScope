@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { pool } from "../db";
 import { registerSchema, loginSchema } from "../lib/validation";
 import { errorResponse, zodErrorToFields } from "../lib/errors";
+import { requireAuth, AuthRequest } from "../middleware/auth";
 
 const router = Router();
 
@@ -161,6 +162,31 @@ router.post("/login", async (req, res) => {
     });
   } catch (err) {
     console.error("Login error:", err);
+    return errorResponse(res, 500, {
+      code: "INTERNAL_ERROR",
+      message: "サーバーエラーが発生しました",
+    });
+  }
+});
+
+// GET /api/auth/me
+router.get("/me", requireAuth, async (req, res) => {
+  const userId = (req as AuthRequest).userId;
+  try {
+    const result = await pool.query(
+      "SELECT id, email FROM users WHERE id = $1",
+      [userId]
+    );
+    if (result.rows.length === 0) {
+      return errorResponse(res, 401, {
+        code: "UNAUTHORIZED",
+        message: "ユーザーが見つかりません",
+      });
+    }
+    const user = result.rows[0];
+    res.status(200).json({ user: { id: user.id, email: user.email } });
+  } catch (err) {
+    console.error("Me error:", err);
     return errorResponse(res, 500, {
       code: "INTERNAL_ERROR",
       message: "サーバーエラーが発生しました",

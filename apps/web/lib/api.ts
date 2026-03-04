@@ -33,6 +33,9 @@ async function request<T>(
     const json = await res.json();
 
     if (!res.ok) {
+      if (res.status === 401 && typeof window !== "undefined" && !endpoint.startsWith("/auth/")) {
+        window.location.href = "/login";
+      }
       return { error: json.error };
     }
 
@@ -75,6 +78,10 @@ export async function logout() {
   return request<void>("/auth/logout", {
     method: "POST",
   });
+}
+
+export async function getMe() {
+  return request<AuthResponse>("/auth/me");
 }
 
 // Stamps API

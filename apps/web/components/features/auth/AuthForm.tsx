@@ -33,6 +33,17 @@ export function AuthForm({ mode }: AuthFormProps) {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("有効なメールアドレスを入力してください");
+      return;
+    }
+
+    if (!isLogin && password.length < 8) {
+      setError("パスワードは8文字以上で入力してください");
+      return;
+    }
+
     if (!isLogin && password !== confirmPassword) {
       setError("パスワードが一致しません");
       return;

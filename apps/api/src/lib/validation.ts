@@ -14,10 +14,19 @@ export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 
 // ========== Common ==========
-// YYYY-MM-DD 形式を正規表現でチェック
+// YYYY-MM-DD 形式かつ実在する日付かチェック
 const dateStringSchema = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "date は YYYY-MM-DD 形式で指定してください");
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "date は YYYY-MM-DD 形式で指定してください")
+  .refine((val) => {
+    const [year, month, day] = val.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    return (
+      date.getFullYear() === year &&
+      date.getMonth() === month - 1 &&
+      date.getDate() === day
+    );
+  }, "有効な日付を指定してください");
 
 // UUID形式チェック
 const uuidSchema = z.string().uuid("taskId は UUID 形式で指定してください");
