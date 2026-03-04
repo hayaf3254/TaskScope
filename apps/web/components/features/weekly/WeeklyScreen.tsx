@@ -66,7 +66,7 @@ export function WeeklyScreen() {
     if (data && !error) {
       // 成功: ローカル更新
       if (weeklyData) {
-        setWeeklyData({ ...weeklyData, target_percent: data.settings.weekly_target_percent });
+        setWeeklyData({ ...weeklyData, target_percent: data.settings.weekly_target_percent ?? null });
       }
     } else {
       // TODO: エラー表示
