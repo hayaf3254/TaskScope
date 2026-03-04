@@ -25,6 +25,7 @@ export function TaskModal({
   const [weight, setWeight] = useState(3);
   const [isActive, setIsActive] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const [prevIsOpen, setPrevIsOpen] = useState(false);
 
   // モーダルが開いた瞬間に初期値をセット（レンダー中に更新）
@@ -38,6 +39,7 @@ export function TaskModal({
       setWeight(3);
       setIsActive(true);
     }
+    setError("");
     setPrevIsOpen(true);
   }
   if (!isOpen && prevIsOpen) {
@@ -46,7 +48,22 @@ export function TaskModal({
 
   // 保存処理
   async function handleSave() {
-    if (!title.trim() || saving) return;
+    if (saving) return;
+    setError("");
+
+    if (!title.trim()) {
+      setError("タスク名を入力してください");
+      return;
+    }
+    if (title.trim().length > 100) {
+      setError("タスク名は100文字以内で入力してください");
+      return;
+    }
+    if (!Number.isInteger(weight) || weight < 1 || weight > 10) {
+      setError("重みは1〜10の整数で入力してください");
+      return;
+    }
+
     setSaving(true);
     await onSave(title.trim(), weight, isActive);
     setSaving(false);
@@ -106,6 +123,10 @@ export function TaskModal({
           </button>
         </div>
 
+        {error && (
+          <p className="mt-3 text-sm text-red-500">{error}</p>
+        )}
+
         {/* ボタン */}
         <div className="modal-actions">
           <button className="modal-btn modal-btn-cancel" onClick={onClose}>
@@ -114,7 +135,7 @@ export function TaskModal({
           <button
             className="modal-btn modal-btn-save"
             onClick={handleSave}
-            disabled={!title.trim() || saving}
+            disabled={saving}
           >
             {saving ? "保存中..." : "保存"}
           </button>
