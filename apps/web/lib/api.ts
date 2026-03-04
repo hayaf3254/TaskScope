@@ -1,11 +1,8 @@
+import type { components } from "./api-types";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
-type ApiError = {
-  code: string;
-  message: string;
-  fields?: Record<string, string>;
-  details?: Record<string, unknown>;
-};
+type ApiError = components["schemas"]["ErrorObject"];
 
 type ApiResponse<T> = {
   data?: T;
@@ -45,16 +42,15 @@ async function request<T>(
       error: {
         code: "NETWORK_ERROR",
         message: "サーバーに接続できません",
+        fields: {},
+        details: {},
       },
     };
   }
 }
 
 // Auth API
-export type User = {
-  id: string;
-  email: string;
-};
+export type User = components["schemas"]["User"];
 
 type AuthResponse = {
   user: User;
@@ -85,12 +81,7 @@ export async function getMe() {
 }
 
 // Stamps API
-export type StampResponse = {
-  date: string;
-  stamped: boolean;
-  streak_current: number;
-  streak_best: number;
-};
+export type StampResponse = components["schemas"]["StampStatusResponse"];
 
 export async function postStamp(date: string) {
   return request<StampResponse>("/stamps", {
@@ -104,28 +95,9 @@ export async function getStampStatus(date: string) {
 }
 
 // Daily API
-export type DailyTask = {
-  taskId: string;
-  title: string;
-  weight: number;
-  achievement_percent: number;
-};
-
-export type DailyResponse = {
-  date: string;
-  denominator_weight: number | null;
-  weighted_numerator: number | null;
-  daily_percent: number | null;
-  tasks: DailyTask[];
-  is_no_task_day: boolean;
-};
-
-export type DailyCheckResponse = {
-  date: string;
-  denominator_weight: number;
-  weighted_numerator: number;
-  daily_percent: number;
-};
+export type DailyTask = components["schemas"]["DailyTaskItem"];
+export type DailyResponse = components["schemas"]["DailyGetResponse"];
+export type DailyCheckResponse = components["schemas"]["DailySaveResponse"];
 
 export async function getDaily(date: string) {
   return request<DailyResponse>(`/daily?date=${date}`);
@@ -142,13 +114,7 @@ export async function postDailyCheck(
 }
 
 // Tasks API
-export type Task = {
-  id: string;
-  title: string;
-  weight: number;
-  is_active: boolean;
-  archived_at: string | null;
-};
+export type Task = components["schemas"]["Task"];
 
 type TasksResponse = {
   tasks: Task[];
@@ -186,30 +152,15 @@ export async function deleteTask(id: string) {
 }
 
 // Weekly API
-export type WeeklyDay = {
-  date: string;
-  daily_percent: number | null;
-  is_no_task_day: boolean;
-};
-
-export type WeeklyResponse = {
-  week_start: string;
-  week_end: string;
-  days: WeeklyDay[];
-  weekly_average: number;
-  target_percent: number | null;
-};
+export type WeeklyDay = components["schemas"]["WeeklyDay"];
+export type WeeklyResponse = components["schemas"]["WeeklyResponse"];
 
 export async function getWeekly(weekStart: string) {
   return request<WeeklyResponse>(`/weekly?week_start=${weekStart}`);
 }
 
 // Settings API
-export type Settings = {
-  weekly_target_percent: number | null;
-  timezone: string;
-  week_start: number;
-};
+export type Settings = components["schemas"]["Settings"];
 
 type SettingsResponse = {
   settings: Settings;
