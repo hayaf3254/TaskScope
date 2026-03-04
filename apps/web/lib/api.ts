@@ -80,6 +80,10 @@ export async function logout() {
   });
 }
 
+export async function getMe() {
+  return request<AuthResponse>("/auth/me");
+}
+
 // Stamps API
 export type StampResponse = {
   date: string;
