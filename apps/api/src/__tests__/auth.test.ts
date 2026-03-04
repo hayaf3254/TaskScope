@@ -51,13 +51,42 @@ describe("POST /api/auth/register", () => {
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
 
-  it("バリデーション: パスワード8文字未満", async () => {
+  it("バリデーション: パスワード8文字未満 (5文字)", async () => {
     const res = await request(app)
       .post("/api/auth/register")
       .send({ email: "test@example.com", password: "short" });
 
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("境界値: パスワード7文字はNG", async () => {
+    const res = await request(app)
+      .post("/api/auth/register")
+      .send({ email: "test@example.com", password: "1234567" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("境界値: パスワード8文字はOK", async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+
+    const mockClient = {
+      query: vi.fn()
+        .mockResolvedValueOnce(undefined) // BEGIN
+        .mockResolvedValueOnce(undefined) // INSERT users
+        .mockResolvedValueOnce(undefined) // INSERT user_settings
+        .mockResolvedValueOnce(undefined), // COMMIT
+      release: vi.fn(),
+    };
+    mockPool.connect.mockResolvedValueOnce(mockClient);
+
+    const res = await request(app)
+      .post("/api/auth/register")
+      .send({ email: "test@example.com", password: "12345678" });
+
+    expect(res.status).toBe(201);
   });
 
   it("重複エラー: 既存メールアドレス", async () => {
