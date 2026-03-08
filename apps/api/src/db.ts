@@ -1,6 +1,6 @@
-import { Pool } from "pg"; //クライアントライブラリ pg から Pool クラスを読み込む
+import { Pool } from "pg";
 
-if (!process.env.DATABASE_URL) { //早期エラー。DATABASE_URL がなければこのファイルを読み込んだ時点でクラッシュさせる
+if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required");
 }
 
