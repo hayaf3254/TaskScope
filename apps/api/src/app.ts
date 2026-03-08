@@ -24,12 +24,14 @@ export function createApp(options?: { disableLogger?: boolean }) {
   app.use(
     cors({
       origin: corsOrigin ? corsOrigin.split(",") : true,
-      credentials: true,
+      credentials: true, // Cookieを含むリクエストを許可
     })
   );
 
+  // デプロイ先の死活監視用
   app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
+  // DB疎通確認用
   app.get("/api/db/ping", async (_req, res) => {
     const r = await pool.query("select now() as now");
     res.json({ ok: true, now: r.rows[0]?.now });

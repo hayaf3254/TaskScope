@@ -9,6 +9,7 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required");
 }
 
+// db.tsのpoolとは別（このスクリプトは単体実行するため）
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 const MIGRATIONS_DIR = path.resolve(
@@ -31,7 +32,7 @@ async function migrate() {
     const { rows } = await client.query<{ filename: string }>(
       "SELECT filename FROM schema_migrations ORDER BY filename"
     );
-    const applied = new Set(rows.map((r) => r.filename));
+    const applied = new Set(rows.map((r) => r.filename)); // has()でO(1)検索するためSet化
 
     // マイグレーションファイルを昇順で取得
     const files = fs
