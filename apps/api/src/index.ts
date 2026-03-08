@@ -8,7 +8,7 @@ const Env = z.object({
 
   DATABASE_URL: z.string().min(1),
 
-  JWT_SECRET: z.string().min(16),
+  JWT_SECRET: z.string().min(16), // 短すぎると危険なので16文字以上必須
   COOKIE_NAME: z.string().default("taskscope_jwt"),
   COOKIE_SECURE: z.coerce.boolean().default(false),
   COOKIE_SAMESITE: z.enum(["lax", "strict", "none"]).default("lax"),
