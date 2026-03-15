@@ -6,17 +6,7 @@ import { NavBar, TabId } from "@/components/ui/NavBar";
 import { WeeklyGoalModal } from "@/components/ui/WeeklyGoalModal";
 import { WeeklyChart } from "./WeeklyChart";
 import { getWeekly, updateSettings, WeeklyResponse } from "@/lib/api";
-
-// 今週の月曜日を取得
-function getWeekStart(): string {
-  const now = new Date();
-  const day = now.getDay();
-  // 日曜(0)の場合は-6、それ以外は1-dayで月曜に戻る
-  const diff = day === 0 ? -6 : 1 - day;
-  const monday = new Date(now);
-  monday.setDate(now.getDate() + diff);
-  return monday.toISOString().split("T")[0];
-}
+import { getLogicalWeekStart } from "@/lib/date";
 
 // 日付を「YYYY-MM-DD (曜日)」形式にフォーマット
 function formatDateWithDay(dateStr: string): string {
@@ -34,7 +24,7 @@ export function WeeklyScreen() {
 
   useEffect(() => {
     async function fetchWeekly() {
-      const weekStart = getWeekStart();
+      const weekStart = getLogicalWeekStart();
       const { data, error } = await getWeekly(weekStart);
       if (data && !error) {
         setWeeklyData(data);
