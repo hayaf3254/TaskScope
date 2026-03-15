@@ -6,12 +6,7 @@ import { Check } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { NavBar, TabId } from "@/components/ui/NavBar";
 import { getStampStatus, postStamp } from "@/lib/api";
-
-// 今日の日付をYYYY-MM-DD形式で取得
-function getTodayString(): string {
-  const now = new Date();
-  return now.toISOString().split("T")[0];
-}
+import { getLogicalDate } from "@/lib/date";
 
 // 日付を「YYYY-MM-DD (曜日)」形式にフォーマット
 function formatDateWithDay(dateStr: string): string {
@@ -29,7 +24,7 @@ export function StampScreen() {
   const [loading, setLoading] = useState(true);
   const [pressing, setPressing] = useState(false);
 
-  const today = getTodayString();
+  const today = getLogicalDate();
 
   // 初期ロード: 今日のスタンプ状態を取得
   useEffect(() => {

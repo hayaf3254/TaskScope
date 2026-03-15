@@ -5,12 +5,7 @@ import { useRouter } from "next/navigation";
 import { NavBar, TabId } from "@/components/ui/NavBar";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { getDaily, postDailyCheck, DailyTask } from "@/lib/api";
-
-// 今日の日付をYYYY-MM-DD形式で取得
-function getTodayString(): string {
-  const now = new Date();
-  return now.toISOString().split("T")[0];
-}
+import { getLogicalDate } from "@/lib/date";
 
 // 日付を「YYYY-MM-DD (曜日)」形式にフォーマット
 function formatDateWithDay(dateStr: string): string {
@@ -26,7 +21,7 @@ type TaskProgress = {
 
 export function TodayScreen() {
   const router = useRouter();
-  const today = getTodayString();
+  const today = getLogicalDate();
 
   const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [taskProgress, setTaskProgress] = useState<Record<string, TaskProgress>>({});
