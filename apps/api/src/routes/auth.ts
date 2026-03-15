@@ -19,7 +19,7 @@ const COOKIE_SAMESITE = (process.env.COOKIE_SAMESITE || "lax") as
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
 
 const BCRYPT_ROUNDS = 10;
-const JWT_EXPIRES_IN = "14d";
+const JWT_EXPIRES_IN = "8h";
 
 function getCookieOptions() {
   return {
@@ -28,7 +28,7 @@ function getCookieOptions() {
     sameSite: COOKIE_SAMESITE,
     domain: COOKIE_DOMAIN,
     path: "/",
-    maxAge: 14 * 24 * 60 * 60 * 1000,
+    maxAge: 8 * 60 * 60 * 1000,
   };
 }
 
