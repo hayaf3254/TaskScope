@@ -88,19 +88,33 @@ router.get("/", requireAuth, async (req, res) => {
       };
     });
 
-    // 6. weekly_average 計算（null は 0 扱い、7日で割る）
-    const sum = days.reduce((acc, day) => acc + (day.daily_percent ?? 0), 0);
-    const weekly_average = Math.round(sum / 7);
-
-    // 7. target_percent を user_settings から取得
+    // 6. target_percent, timezone を user_settings から取得
     const settingsResult = await pool.query(
-      `SELECT weekly_target_percent FROM user_settings WHERE user_id = $1`,
+      `SELECT weekly_target_percent, timezone FROM user_settings WHERE user_id = $1`,
       [userId]
     );
     const target_percent =
       settingsResult.rows.length > 0
         ? settingsResult.rows[0].weekly_target_percent
         : null;
+    const timezone: string =
+      settingsResult.rows.length > 0
+        ? (settingsResult.rows[0].timezone ?? "UTC")
+        : "UTC";
+
+    // 7. weekly_average 計算
+    // 今週表示中は経過日数で割る（月曜÷1, 火曜÷2 ... 日曜÷7）
+    // 過去週は自動的に7になる
+    const todayInUserTz = new Date(
+      new Intl.DateTimeFormat("en-CA", { timeZone: timezone }).format(new Date())
+    );
+    const daysPassed = Math.floor(
+      (todayInUserTz.getTime() - startDate.getTime()) / 86400000
+    ) + 1;
+    const divisor = Math.min(Math.max(daysPassed, 1), 7);
+
+    const sum = days.reduce((acc, day) => acc + (day.daily_percent ?? 0), 0);
+    const weekly_average = Math.round(sum / divisor);
 
     // 8. レスポンス
     res.status(200).json({
