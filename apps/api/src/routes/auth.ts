@@ -173,18 +173,33 @@ router.post("/login", async (req, res) => {
 router.get("/me", requireAuth, async (req, res) => {
   const userId = (req as AuthRequest).userId;
   try {
-    const result = await pool.query(
+    const userResult = await pool.query(
       "SELECT id, email FROM users WHERE id = $1",
       [userId]
     );
-    if (result.rows.length === 0) {
+    if (userResult.rows.length === 0) {
       return errorResponse(res, 401, {
         code: "UNAUTHORIZED",
         message: "ユーザーが見つかりません",
       });
     }
-    const user = result.rows[0];
-    res.status(200).json({ user: { id: user.id, email: user.email } });
+
+    const settingsResult = await pool.query(
+      "SELECT weekly_target_percent, timezone, week_start FROM user_settings WHERE user_id = $1",
+      [userId]
+    );
+
+    const user = userResult.rows[0];
+    const settings = settingsResult.rows[0] ?? { weekly_target_percent: null, timezone: "Asia/Tokyo", week_start: 1 };
+
+    res.status(200).json({
+      user: { id: user.id, email: user.email },
+      settings: {
+        weekly_target_percent: settings.weekly_target_percent,
+        timezone: settings.timezone,
+        week_start: settings.week_start,
+      },
+    });
   } catch (err) {
     console.error("Me error:", err);
     return errorResponse(res, 500, {
