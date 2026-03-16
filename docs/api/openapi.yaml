@@ -403,7 +403,7 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
-  /me:
+  /auth/me:
     get:
       tags: [Me]
       summary: Get current user and settings
