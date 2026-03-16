@@ -56,6 +56,11 @@ type AuthResponse = {
   user: User;
 };
 
+type MeResponse = {
+  user: User;
+  settings: Settings;
+};
+
 export async function register(email: string, password: string) {
   return request<AuthResponse>("/auth/register", {
     method: "POST",
@@ -77,7 +82,7 @@ export async function logout() {
 }
 
 export async function getMe() {
-  return request<AuthResponse>("/auth/me");
+  return request<MeResponse>("/auth/me");
 }
 
 // Stamps API
