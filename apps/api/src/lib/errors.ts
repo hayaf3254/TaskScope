@@ -17,12 +17,11 @@ export function errorResponse(
     error: {
       code: error.code,
       message: error.message,
-      fields: error.fields ?? {},
+      fields: error.fields ?? {}, //?? = 「左がnull/undefinedなら右を使う」演算子
       details: error.details ?? {},
     },
   });
 }
-//?? = 「左がnull/undefinedなら右を使う」演算子
 
 //ZodErrorを errorResponse の fields に渡せる形に変換
 export function zodErrorToFields(error: ZodError): Record<string, string> {
