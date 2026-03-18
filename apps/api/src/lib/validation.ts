@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const registerSchema = z.object({ //館員登録の時のスキーマ
+export const registerSchema = z.object({ //会員登録の時のスキーマ
   email: z.string().email("有効なメールアドレスを入力してください"),
   password: z.string().min(8, "パスワードは8文字以上で入力してください"),
 });
@@ -22,6 +22,8 @@ const dateStringSchema = z
     const [year, month, day] = val.split("-").map(Number);
     const date = new Date(year, month - 1, day);
     return (
+      // Dateの自動補正が起きていないか確認する
+      // 例: 2/31を渡すと3/3に補正されるため、元の値と一致しなくなる → false を返す
       date.getFullYear() === year &&
       date.getMonth() === month - 1 && //JavaScript の Date は 月が 0 始まり（1月=0, 2月=1, … 12月=11）なので、month から 1を引く必要がある
       date.getDate() === day
