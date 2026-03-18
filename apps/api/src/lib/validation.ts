@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-export const registerSchema = z.object({
+export const registerSchema = z.object({ //館員登録の時のスキーマ
   email: z.string().email("有効なメールアドレスを入力してください"),
   password: z.string().min(8, "パスワードは8文字以上で入力してください"),
 });
 
-export const loginSchema = z.object({
+export const loginSchema = z.object({ //ログイン用のスキーマ
   email: z.string().email("有効なメールアドレスを入力してください"),
-  password: z.string().min(1, "パスワードを入力してください"),
+  password: z.string().min(1, "パスワードを入力してください"),//空欄不可のための１
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -18,12 +18,12 @@ export type LoginInput = z.infer<typeof loginSchema>;
 const dateStringSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "date は YYYY-MM-DD 形式で指定してください")
-  .refine((val) => {
+  .refine((val) => { //ここで存在しない日付をチェック
     const [year, month, day] = val.split("-").map(Number);
     const date = new Date(year, month - 1, day);
     return (
       date.getFullYear() === year &&
-      date.getMonth() === month - 1 &&
+      date.getMonth() === month - 1 && //JavaScript の Date は 月が 0 始まり（1月=0, 2月=1, … 12月=11）なので、month から 1を引く必要がある
       date.getDate() === day
     );
   }, "有効な日付を指定してください");
