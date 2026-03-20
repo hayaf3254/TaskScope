@@ -79,5 +79,6 @@ GitHub Actionsを導入し、Pull Request時に `Lint`, `Type Check`, `Unit Test
 
 
 #### ▼ アーキテクチャ図
+<img width="794" height="404" alt="image" src="https://github.com/user-attachments/assets/d71a03c7-105c-40c2-81e9-86a258a9c1b5" />
 
 
