@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { NavBar, TabId } from "@/components/ui/NavBar";
-import { getStampStatus, postStamp } from "@/lib/api";
+import { getStampStatus, postStamp, logout } from "@/lib/api";
 import { getLogicalDate } from "@/lib/date";
 
 // 日付を「YYYY-MM-DD (曜日)」形式にフォーマット
@@ -60,6 +60,12 @@ export function StampScreen() {
     router.push("/today");
   }
 
+  // ログアウト
+  async function handleLogout() {
+    await logout();
+    router.replace("/login");
+  }
+
   // タブ切り替え
   function handleTabChange(tab: TabId) {
     const routes: Record<TabId, string> = {
@@ -83,8 +89,18 @@ export function StampScreen() {
     <div className="stamp-bg">
       {/* ヘッダー */}
       <div className="stamp-header">
-        <h1>おかえりなさい!</h1>
-        <p>{formatDateWithDay(today)}</p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1>おかえりなさい!</h1>
+            <p>{formatDateWithDay(today)}</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="text-xs text-gray-400 hover:text-gray-600 mt-1"
+          >
+            ログアウト
+          </button>
+        </div>
       </div>
 
       {/* メインカード */}
